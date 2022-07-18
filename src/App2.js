@@ -1,10 +1,20 @@
 import { Suspense, useRef, useState, useEffect } from "react"
 import { Canvas, useFrame } from "@react-three/fiber"
-import { ContactShadows, Environment, useGLTF, OrbitControls } from "@react-three/drei"
+import {
+  ContactShadows,
+  Environment,
+  useGLTF,
+  OrbitControls,
+  PerspectiveCamera,
+  SpotLight,
+  useHelper,
+} from "@react-three/drei"
 import { HexColorPicker } from "react-colorful"
 import { proxy, useSnapshot } from "valtio"
 import Wagon from "./Wagon"
 import * as THREE from "three"
+import * as PropTypes from "prop-types"
+import { PointLightHelper } from "three"
 
 const state = proxy({
   current: null,
@@ -22,11 +32,12 @@ const state = proxy({
     ToitExterne: "#B2483A",
     FenetreExterne: "#B2483A",
     Nuages: "#ffffff",
+    Background: "#321D46"
   },
 })
 
 function Model({ ...props }) {
-  const group = useRef()
+  const group = useRef();
   const { nodes, materials } = useGLTF("/WagonWithoutTexture.glb")
 
   const snap = useSnapshot(state)
@@ -65,84 +76,96 @@ function Model({ ...props }) {
           receiveShadow
           geometry={nodes.Sphere.geometry}
           // material={materials.Poignet}
-          material={new THREE.MeshBasicMaterial({ color: snap.items.Poignet, name: "Poignet" })}
+          // material={new THREE.MeshBasicMaterial({ color: snap.items.Poignet, name: "Poignet" })}
+          material={new THREE.MeshStandardMaterial({ color: snap.items.Poignet, name: "Poignet", roughness: 0.05, metalness: 0.75})}
         />
         <mesh
           castShadow
           receiveShadow
           geometry={nodes.Sphere_1.geometry}
           // material={materials.InterieurRoues}
-          material={new THREE.MeshBasicMaterial({ color: snap.items.InterieurRoues, name: "InterieurRoues" })}
+          // material={new THREE.MeshBasicMaterial({ color: snap.items.InterieurRoues, name: "InterieurRoues" })}
+          material={new THREE.MeshStandardMaterial({ color: snap.items.InterieurRoues, name: "InterieurRoues", roughness: 0.9, metalness: 0.1})}
         />
         <mesh
           castShadow
           receiveShadow
           geometry={nodes.Sphere_2.geometry}
           // material={materials.Carrosserie}
-          material={new THREE.MeshBasicMaterial({ color: snap.items.Carrosserie, name: "Carrosserie" })}
+          // material={new THREE.MeshBasicMaterial({ color: snap.items.Carrosserie, name: "Carrosserie" })}
+          material={new THREE.MeshStandardMaterial({ color: snap.items.Carrosserie, name: "Carrosserie", roughness: 0.9, metalness: 0.5})}
         />
         <mesh
           castShadow
           receiveShadow
           geometry={nodes.Sphere_3.geometry}
           // material={materials.Escaliers}
-          material={new THREE.MeshBasicMaterial({ color: snap.items.Escaliers, name: "Escaliers" })}
+          // material={new THREE.MeshBasicMaterial({ color: snap.items.Escaliers, name: "Escaliers" })}
+          material={new THREE.MeshStandardMaterial({ color: snap.items.Escaliers, name: "Escaliers", roughness: 0.5, metalness: 0.5 })}
         />
         <mesh
           castShadow
           receiveShadow
           geometry={nodes.Sphere_4.geometry}
           // material={materials.Fenetre}
-          material={new THREE.MeshBasicMaterial({ color: snap.items.Fenetre, name: "Fenetre" })}
+          // material={new THREE.MeshBasicMaterial({ color: snap.items.Fenetre, name: "Fenetre" })
+          material={new THREE.MeshStandardMaterial({ color: snap.items.Fenetre, name: "Fenetre", roughness: 0.5, metalness: 0, transparent: true, opacity: 0.5 })}
         />
         <mesh
           castShadow
           receiveShadow
           geometry={nodes.Sphere_5.geometry}
           // material={materials.Cheminet}
-          material={new THREE.MeshBasicMaterial({ color: snap.items.Cheminet, name: "Cheminet" })}
+          // material={new THREE.MeshBasicMaterial({ color: snap.items.Cheminet, name: "Cheminet" })}
+          material={new THREE.MeshStandardMaterial({ color: snap.items.Cheminet, name: "Cheminet", roughness: 0.1, metalness: 0.8 })}
         />
         <mesh
           castShadow
           receiveShadow
           geometry={nodes.Sphere_6.geometry}
           // material={materials.Toit}
-          material={new THREE.MeshBasicMaterial({ color: snap.items.Toit, name: "Toit" })}
+          // material={new THREE.MeshBasicMaterial({ color: snap.items.Toit, name: "Toit" })}
+          material={new THREE.MeshStandardMaterial({ color: snap.items.Toit, name: "Toit", roughness: 0.5, metalness: 0 })}
         />
         <mesh
           castShadow
           receiveShadow
           geometry={nodes.Sphere_7.geometry}
           // material={materials.Roues}
-          material={new THREE.MeshBasicMaterial({ color: snap.items.Roues, name: "Roues" })}
+          // material={new THREE.MeshBasicMaterial({ color: snap.items.Roues, name: "Roues" })}
+          material={new THREE.MeshStandardMaterial({ color: snap.items.Roues, name: "Roues", roughness: 0.5, metalness: 0.5  })}
         />
         <mesh
           castShadow
           receiveShadow
           geometry={nodes.Sphere_8.geometry}
           // material={materials.CarosserieExterne}
-          material={new THREE.MeshBasicMaterial({ color: snap.items.CarosserieExterne, name: "CarosserieExterne" })}
+          // material={new THREE.MeshBasicMaterial({ color: snap.items.CarosserieExterne, name: "CarosserieExterne" })}
+          material={new THREE.MeshStandardMaterial({ color: snap.items.CarosserieExterne, name: "CarosserieExterne", roughness: 0.8, metalness: 0.5  })}
         />
         <mesh
           castShadow
           receiveShadow
           geometry={nodes.Sphere_9.geometry}
           // material={materials.Porte}
-          material={new THREE.MeshBasicMaterial({ color: snap.items.Porte, name: "Porte" })}
+          // material={new THREE.MeshBasicMaterial({ color: snap.items.Porte, name: "Porte" })}
+          material={new THREE.MeshStandardMaterial({ color: snap.items.Porte, name: "Porte", roughness: 0.5, metalness: 0.5  })}
         />
         <mesh
           castShadow
           receiveShadow
           geometry={nodes.Sphere_10.geometry}
           // material={materials.ToitExterne}
-          material={new THREE.MeshBasicMaterial({ color: snap.items.ToitExterne, name: "ToitExterne" })}
+          // material={new THREE.MeshBasicMaterial({ color: snap.items.ToitExterne, name: "ToitExterne" })}
+          material={new THREE.MeshStandardMaterial({ color: snap.items.ToitExterne, name: "ToitExterne", roughness: 0.5, metalness: 0.5  })}
         />
         <mesh
           castShadow
           receiveShadow
           geometry={nodes.Sphere_11.geometry}
           // material={materials.FenetreExterne}
-          material={new THREE.MeshBasicMaterial({ color: snap.items.FenetreExterne, name: "FenetreExterne" })}
+          // material={new THREE.MeshBasicMaterial({ color: snap.items.FenetreExterne, name: "FenetreExterne" })}
+          material={new THREE.MeshStandardMaterial({ color: snap.items.FenetreExterne, name: "FenetreExterne", roughness: 0.5, metalness: 0.5  })}
         />
       </group>
       <mesh
@@ -150,7 +173,8 @@ function Model({ ...props }) {
         receiveShadow
         geometry={nodes.Balls.geometry}
         // material={materials.Nuages}
-        material={new THREE.MeshBasicMaterial({ color: snap.items.Nuages, name: "Nuages" })}
+        // material={new THREE.MeshBasicMaterial({ color: snap.items.Nuages, name: "Nuages" })}
+        material={new THREE.MeshStandardMaterial({ color: snap.items.Nuages, name: "Nuages", roughness: 0.5, metalness: 0.5  })}
         position={[-0.43, 5.11, 0.03]}
         scale={0.11}
       />
@@ -169,16 +193,69 @@ function Picker() {
   )
 }
 
-export default function App() {
+const angleToRadians = (angleInDeg) => (Math.PI / 180) * angleInDeg;
+
+const Light = () => {
+  const light1 = useRef()
+  const light2 = useRef()
+  const light3 = useRef()
+  const light4 = useRef()
+  useHelper(light1, PointLightHelper, 1);
+  useHelper(light2, PointLightHelper, 1);
+  useHelper(light3, PointLightHelper, 1);
+  useHelper(light4, PointLightHelper, 1);
+
   return (
     <>
-      <Canvas shadows camera={{ position: [0, 0, 10], fov: 75 }}>
-        <ambientLight intensity={0.7} />
-        <spotLight intensity={0.5} angle={0.1} penumbra={1} position={[10, 15, 10]} castShadow />
+      <pointLight args={[`#ffffff`, 1, 100]} position={[5, 10, 0]} />
+      <pointLight args={[`#ffffff`, 0.5, 100]} position={[0, 6, -5]} />
+      <pointLight args={[`#ffffff`, 0.5, 100]} position={[0, 6, 5]} />
+      <pointLight args={[`#76AFFF`, 0.5, 100]} position={[0, 0, 0]} />
+    </>
+    )
+
+
+}
+
+
+export default function App() {
+  const myCamera = new THREE.PerspectiveCamera(75, 1, 0.1, 2000);
+  // myCamera.position = new THREE.Vector3(0, 0, 10);
+  const snap = useSnapshot(state)
+
+  const ref = useRef();
+
+  return (
+    <>
+      <Canvas shadows >
+        <PerspectiveCamera makeDefault position={[0, 1, 5]} />
+        {/*<ambientLight intensity={1.0} />*/}
+        {/*<spotLight intensity={0.5} angle={0.1} penumbra={1} position={[10, 15, 10]} castShadow />*/}
+
+        {/* Ambient light */}
+        {/*<ambientLight args={["#ffffff", 0]} />*/}
+        <directionalLight intensity={0.5} />
+        <Light/>
+
+
         <Suspense fallback={null}>
           <Model />
-          <Environment preset="city" />
+
+          {/*<Environment preset="city" />*/}
+          <Environment background>
+            <group
+              ref={ref}>
+                <mesh>
+                  <sphereGeometry ref={ref} args={[50, 100, 100]} />
+                  <meshBasicMaterial color={snap.items.Background} side={THREE.BackSide} />
+                </mesh>
+            </group>
+          </Environment>
+
           <ContactShadows position={[0, -0.8, 0]} opacity={0.25} scale={10} blur={1.5} far={0.8} />
+
+
+
         </Suspense>
         <OrbitControls minPolarAngle={Math.PI / 2} maxPolarAngle={Math.PI / 2} enableZoom={true} enablePan={true} />
       </Canvas>
