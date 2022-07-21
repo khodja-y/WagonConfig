@@ -11,10 +11,7 @@ import {
 } from "@react-three/drei"
 import { HexColorPicker } from "react-colorful"
 import { proxy, useSnapshot } from "valtio"
-import Wagon from "./Wagon"
 import * as THREE from "three"
-import * as PropTypes from "prop-types"
-import { PointLightHelper } from "three"
 
 const state = proxy({
   current: null,
@@ -38,7 +35,7 @@ const state = proxy({
 
 function Model({ ...props }) {
   const group = useRef();
-  const { nodes, materials } = useGLTF("/WagonWithoutTexture.glb")
+  const { nodes, materials } = useGLTF("./WagonWithoutTexture.glb")
 
   const snap = useSnapshot(state)
   // Animate model
@@ -200,10 +197,10 @@ const Light = () => {
   const light2 = useRef()
   const light3 = useRef()
   const light4 = useRef()
-  useHelper(light1, PointLightHelper, 1);
-  useHelper(light2, PointLightHelper, 1);
-  useHelper(light3, PointLightHelper, 1);
-  useHelper(light4, PointLightHelper, 1);
+  useHelper(light1, THREE.PointLightHelper, 1);
+  useHelper(light2, THREE.PointLightHelper, 1);
+  useHelper(light3, THREE.PointLightHelper, 1);
+  useHelper(light4, THREE.PointLightHelper, 1);
 
   return (
     <>
